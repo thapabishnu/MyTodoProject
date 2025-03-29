@@ -3,6 +3,7 @@ version: '3.8'
 services:
   db:
     image: postgres:14
+    container_name: mytodoproject-db
     volumes:
       - postgres_data:/var/lib/postgresql/data
     environment:
@@ -12,6 +13,7 @@ services:
 
   web:
     build: .
+    container_name: mytodoproject-web
     command: >
       bash -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
     volumes:
@@ -19,11 +21,9 @@ services:
     ports:
       - "8000:8000"
     environment:
-      - DATABASE_URL=postgres://django_user:password@db:5432/tododb
+      - DATABASE_URL=postgres://postgres:postgres@db:5432/tododb
     depends_on:
       - db
-        #environment:
-        #- DEBUG=1
 
 volumes:
   postgres_data:
