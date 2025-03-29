@@ -1,19 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: postgres-db
+  name: mytodoproject-db
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: postgres-db
+      app: mytodoproject-db
   template:
     metadata:
       labels:
-        app: postgres-db
+        app: mytodoproject-db
     spec:
       containers:
-        - name: postgres
+        - name: mytodoproject-db
           image: postgres:14
           ports:
             - containerPort: 5432
@@ -34,14 +34,15 @@ spec:
         - name: postgres-storage
           persistentVolumeClaim:
             claimName: postgres-pvc
+
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: postgres-db
+  name: mytodoproject-db
 spec:
+  selector:
+    app: mytodoproject-db
   ports:
     - port: 5432
-  selector:
-    app: postgres-db
-
+      targetPort: 5432
