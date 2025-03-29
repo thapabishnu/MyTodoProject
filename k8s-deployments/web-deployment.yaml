@@ -1,46 +1,43 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mytodo-web
+  name: mytodoproject-web
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: mytodo-web
+      app: mytodoproject-web
   template:
     metadata:
       labels:
-        app: mytodo-web
+        app: mytodoproject-web
     spec:
       containers:
-        - name: web
-          image: mytodo-image:latest
+        - name: mytodoproject-web
+          image: engineer442/mytodoproject-web:latest
           ports:
             - containerPort: 8000
           env:
             - name: DATABASE_URL
-              value: "postgres://postgres:$(POSTGRES_PASSWORD)@postgres-db:5432/tododb"
-            - name: POSTGRES_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: postgres-secret
-                  key: postgres-password
-          command:
-            - "bash"
-            - "-c"
-            - "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
-      restartPolicy: Always
+              value: postgres://postgres:postgres@mytodoproject-db:5432/tododb
+          volumeMounts:
+            - name: app-storage
+              mountPath: /app
+          command: [ "bash", "-c", "python manage.py migrate && python manage.py runserver 0.0.0.0:8000" ]
+      volumes:
+        - name: app-storage
+          persistentVolumeClaim:
+            claimName: app-pvc
+
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: mytodo-web
+  name: mytodoproject-web
 spec:
-  type: NodePort
-  ports:
-    - port: 80
-      targetPort: 8000
-      nodePort: 38000
   selector:
-    app: mytodo-web
-
+    app: mytodoproject-web
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8000
