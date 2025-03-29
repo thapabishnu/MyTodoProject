@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mytodo-web
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mytodo-web
+  template:
+    metadata:
+      labels:
+        app: mytodo-web
+    spec:
+      containers:
+        - name: web
+          image: mytodo-image:latest
+          ports:
+            - containerPort: 8000
+          env:
+            - name: DATABASE_URL
+              value: "postgres://postgres:$(POSTGRES_PASSWORD)@postgres-db:5432/tododb"
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: postgres-password
+          command:
+            - "bash"
+            - "-c"
+            - "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mytodo-web
+spec:
+  type: NodePort
+  ports:
+    - port: 80
+      targetPort: 8000
+      nodePort: 38000
+  selector:
+    app: mytodo-web
+
