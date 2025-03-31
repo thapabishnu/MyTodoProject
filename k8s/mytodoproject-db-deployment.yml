@@ -1,0 +1,50 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: postgres-secret
+type: Opaque
+data:
+  postgres-password: cG9zdGdyZXM=
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mytodoproject-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mytodoproject-db
+  template:
+    metadata:
+      labels:
+        app: mytodoproject-db
+    spec:
+      containers:
+        - name: mytodoproject-db
+          image: postgres:14
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_USER
+              value: "postgres"
+            - name: POSTGRES_DB
+              value: "mydatabase"
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: postgres-password
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mytodoproject-db
+spec:
+  selector:
+    app: mytodoproject-db
+  ports:
+    - protocol: TCP
+      port: 5432
+      targetPort: 5432
+
