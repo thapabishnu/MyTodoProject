@@ -1,3 +1,5 @@
+version: '3.8'  # Specify version
+
 services:
   db:
     image: postgres:14
@@ -14,7 +16,7 @@ services:
       - app-network
 
   web:
-    image: engineer442/mytodoproject-web:latest  # Use pre-built image
+    build: .
     container_name: mytodoproject-web
     command: >
       bash -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
@@ -23,7 +25,6 @@ services:
     ports:
       - "8000:8000"
     environment:
-      # Adjust the environment variable to match your connection settings
       - DATABASE_URL=postgres://postgres:postgres@db:5432/tododb
     depends_on:
       - db
@@ -36,4 +37,3 @@ volumes:
 networks:
   app-network:
     driver: bridge
-

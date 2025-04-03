@@ -84,13 +84,13 @@ WSGI_APPLICATION = 'MyTodoProject.wsgi.application'
 #    }
 #}
 
-DATABASES = {
+'DATABASES': {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'tododb',
         'USER': 'postgres',
         'PASSWORD': 'postgres',
-        'HOST': 'mytodoproject-db',
+        'HOST': 'mytodoproject-db',  # Must match your K8s Service name for PostgreSQL
         'PORT': '5432',
     }
 }
