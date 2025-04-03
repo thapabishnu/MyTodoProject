@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         DOCKER_IMAGE = "engineer442/mytodoproject-web"
-        DOCKER_CREDENTIALS_ID = 'dockerhub-credentials'  // Jenkins credential ID for Docker Hub
+        DOCKER_CREDENTIALS_ID = 'dockerhub-credentials'
     }
 
     stages {
@@ -30,4 +30,5 @@ pipeline {
                 }
             }
         }
+    }
 }
