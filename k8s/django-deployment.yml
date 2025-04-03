@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mytodoproject-web
+  labels:
+    app: mytodoproject-web
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mytodoproject-web
+  template:
+    metadata:
+      labels:
+        app: mytodoproject-web
+    spec:
+      containers:
+        - name: django
+          image: engineer442/mytodoproject-web:latest
+          ports:
+            - containerPort: 8000
+          env:
+            - name: DJANGO_DB_NAME
+              value: "tododb"
+            - name: DJANGO_DB_USER
+              value: "postgres"
+            - name: DJANGO_DB_PASSWORD
+              value: "postgres"
+            - name: DJANGO_DB_HOST
+              value: "mytodoproject-db"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mytodoproject-web
+spec:
+  selector:
+    app: mytodoproject-web
+  ports:
+    - protocol: TCP
+      port: 8000
+      targetPort: 8000
+  type: NodePort
+

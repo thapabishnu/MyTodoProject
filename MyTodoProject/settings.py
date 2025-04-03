@@ -74,16 +74,26 @@ WSGI_APPLICATION = 'MyTodoProject.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
+#DATABASES = {
+#    'default': {
+#        'ENGINE': 'django.db.backends.postgresql',
+#        'NAME': 'tododb',
+#        'USER': 'postgres',
+#        'PASSWORD': 'postgres',
+#        'HOST': 'mytodoproject-db'
+#    }
+#}
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'tododb',
         'USER': 'postgres',
         'PASSWORD': 'postgres',
-        'HOST': 'mytodoproject-db'
+        'HOST': 'mytodoproject-db',
+        'PORT': '5432',
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
